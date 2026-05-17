@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NexusDrive Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #38bdf8;
+        }
+
+        input {
+            width: 70%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #38bdf8;
+            color: black;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0ea5e9;
+        }
+
+        pre {
+            background: black;
+            padding: 10px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #22c55e;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🚀 NexusDrive Dashboard</h1>
+
+    <div class="card">
+        <div class="tag">UPLOAD FILE</div><br><br>
+        <input id="fileName" placeholder="Enter file name (e.g. resume.pdf)">
+        <button onclick="upload()">Upload</button>
+    </div>
+
+    <div class="card">
+        <div class="tag">FILE LIST</div><br><br>
+        <button onclick="loadFiles()">Load Files</button>
+        <pre id="output">No data loaded</pre>
+    </div>
+
+    <div class="card">
+        <div class="tag">SYSTEM STATUS</div>
+        <p>✔ Backend Running on Spring Boot</p>
+        <p>✔ H2 Database Connected</p>
+        <p>✔ REST APIs Active</p>
+    </div>
+
+</div>
+
+<script>
+    const BASE_URL = "http://localhost:8080/api/files";
+
+    async function upload() {
+        let name = document.getElementById("fileName").value;
+
+        if (!name) {
+            alert("Enter file name");
+            return;
+        }
+
+        await fetch(`${BASE_URL}/upload?fileName=${name}`, {
+            method: "POST"
+        });
+
+        alert("File Uploaded!");
+    }
+
+    async function loadFiles() {
+        let res = await fetch(`${BASE_URL}/all`);
+        let data = await res.json();
+
+        document.getElementById("output").innerText =
+            JSON.stringify(data, null, 2);
+    }
+</script>
+
+</body>
+</html>
