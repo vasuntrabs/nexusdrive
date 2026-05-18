@@ -1,28 +1,37 @@
 package com.nexusdrive.controller;
 
+import com.nexusdrive.entity.FileEntity;
+import com.nexusdrive.repository.FileRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/files")
+@CrossOrigin("*")
 public class FileController {
 
-    private List<String> files = new ArrayList<>();
+    @Autowired
+    private FileRepository fileRepository;
 
     @PostMapping("/upload")
     public String upload(@RequestParam String fileName) {
-        files.add(fileName);
-        return "Uploaded: " + fileName;
+
+        FileEntity file = new FileEntity();
+        file.setFileName(fileName);
+
+        fileRepository.save(file);
+
+        return "Uploaded Successfully";
     }
 
     @GetMapping("/all")
-    public List<String> getAll() {
-        return files;
-    }
+    public List<String> getAllFiles() {
 
-    @DeleteMapping("/delete")
-    public String delete(@RequestParam String fileName) {
-        files.remove(fileName);
-        return "Deleted: " + fileName;
+        return fileRepository.findAll()
+                .stream()
+                .map(FileEntity::getFileName)
+                .toList();
     }
 }
