@@ -2,73 +2,144 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NexusDrive Dashboard</title>
 
     <style>
-        body {
-            margin: 0;
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
             font-family: Arial, sans-serif;
-            background: #0f172a;
-            color: white;
+            background: linear-gradient(135deg,#0f172a,#111827,#1e293b);
+            color:white;
+            min-height:100vh;
         }
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 30px;
+        .container{
+            max-width:1000px;
+            margin:auto;
+            padding:40px 20px;
         }
 
-        .card {
-            background: #1e293b;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        h1{
+            text-align:center;
+            margin-bottom:10px;
+            font-size:42px;
+            color:#38bdf8;
         }
 
-        h1 {
-            text-align: center;
-            color: #38bdf8;
+        .subtitle{
+            text-align:center;
+            color:#94a3b8;
+            margin-bottom:40px;
         }
 
-        input {
-            width: 70%;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            outline: none;
+        .grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:20px;
         }
 
-        button {
-            padding: 10px 15px;
-            margin-left: 10px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: #38bdf8;
-            color: black;
-            font-weight: bold;
+        .card{
+            background: rgba(30,41,59,0.9);
+            border:1px solid rgba(255,255,255,0.08);
+            padding:25px;
+            border-radius:20px;
+            backdrop-filter: blur(10px);
+            box-shadow:0 8px 25px rgba(0,0,0,0.3);
         }
 
-        button:hover {
-            background: #0ea5e9;
+        .full{
+            grid-column:1/3;
         }
 
-        pre {
-            background: black;
-            padding: 10px;
-            border-radius: 10px;
-            overflow-x: auto;
+        .tag{
+            display:inline-block;
+            background:#22c55e;
+            color:black;
+            padding:6px 14px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:bold;
+            margin-bottom:20px;
         }
 
-        .tag {
-            display: inline-block;
-            padding: 4px 10px;
-            background: #22c55e;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-bottom: 10px;
+        input[type="file"]{
+            width:100%;
+            padding:12px;
+            border-radius:10px;
+            border:none;
+            background:#0f172a;
+            color:white;
+            margin-bottom:15px;
         }
+
+        button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            background:#38bdf8;
+            color:black;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.3s;
+            font-size:15px;
+        }
+
+        button:hover{
+            transform:translateY(-2px);
+            background:#0ea5e9;
+        }
+
+        .status{
+            margin-top:12px;
+            color:#22c55e;
+            font-size:14px;
+        }
+
+        pre{
+            background:#020617;
+            color:#38bdf8;
+            padding:15px;
+            border-radius:12px;
+            overflow-x:auto;
+            margin-top:15px;
+            min-height:150px;
+        }
+
+        .system p{
+            margin-bottom:12px;
+            color:#cbd5e1;
+        }
+
+        .footer{
+            text-align:center;
+            margin-top:30px;
+            color:#64748b;
+            font-size:14px;
+        }
+
+        @media(max-width:768px){
+
+            .grid{
+                grid-template-columns:1fr;
+            }
+
+            .full{
+                grid-column:1;
+            }
+
+            h1{
+                font-size:32px;
+            }
+        }
+
     </style>
 </head>
 
@@ -76,54 +147,109 @@
 
 <div class="container">
 
-    <h1>🚀 NexusDrive Dashboard</h1>
+    <h1>🚀 NexusDrive</h1>
+    <p class="subtitle">
+        Full Stack File Management System using Spring Boot + H2 Database
+    </p>
 
-    <div class="card">
-        <div class="tag">UPLOAD FILE</div><br><br>
-        <input id="fileName" placeholder="Enter file name (e.g. resume.pdf)">
-        <button onclick="upload()">Upload</button>
+    <div class="grid">
+
+        <div class="card">
+
+            <div class="tag">UPLOAD FILE</div>
+
+            <input type="file" id="fileInput">
+
+            <button onclick="uploadFile()">
+                Upload File
+            </button>
+
+            <div class="status" id="uploadStatus"></div>
+
+        </div>
+
+        <div class="card system">
+
+            <div class="tag">SYSTEM STATUS</div>
+
+            <p>✔ Spring Boot Backend Running</p>
+            <p>✔ H2 Database Connected</p>
+            <p>✔ REST APIs Active</p>
+            <p>✔ Cloud Deployment Enabled</p>
+
+        </div>
+
+        <div class="card full">
+
+            <div class="tag">FILE LIST</div>
+
+            <button onclick="loadFiles()">
+                Load Uploaded Files
+            </button>
+
+            <pre id="output">No files loaded</pre>
+
+        </div>
+
     </div>
 
-    <div class="card">
-        <div class="tag">FILE LIST</div><br><br>
-        <button onclick="loadFiles()">Load Files</button>
-        <pre id="output">No data loaded</pre>
-    </div>
-
-    <div class="card">
-        <div class="tag">SYSTEM STATUS</div>
-        <p>✔ Backend Running on Spring Boot</p>
-        <p>✔ H2 Database Connected</p>
-        <p>✔ REST APIs Active</p>
+    <div class="footer">
+        NexusDrive © 2026 | Java Full Stack Project
     </div>
 
 </div>
 
 <script>
-    const BASE_URL = "http://localhost:8080/api/files";
 
-    async function upload() {
-        let name = document.getElementById("fileName").value;
+    const BASE_URL = "/api/files";
 
-        if (!name) {
-            alert("Enter file name");
+    async function uploadFile() {
+
+        const file = document.getElementById("fileInput").files[0];
+
+        if (!file) {
+            alert("Please choose a file");
             return;
         }
 
-        await fetch(`${BASE_URL}/upload?fileName=${name}`, {
-            method: "POST"
-        });
+        try {
 
-        alert("File Uploaded!");
+            await fetch(`${BASE_URL}/upload?fileName=${file.name}`, {
+                method: "POST"
+            });
+
+            document.getElementById("uploadStatus").innerText =
+                "✔ File uploaded successfully";
+
+            loadFiles();
+
+        } catch (error) {
+
+            document.getElementById("uploadStatus").innerText =
+                "❌ Upload failed";
+
+        }
     }
 
     async function loadFiles() {
-        let res = await fetch(`${BASE_URL}/all`);
-        let data = await res.json();
 
-        document.getElementById("output").innerText =
-            JSON.stringify(data, null, 2);
+        try {
+
+            const response = await fetch(`${BASE_URL}/all`);
+
+            const data = await response.json();
+
+            document.getElementById("output").innerText =
+                JSON.stringify(data, null, 2);
+
+        } catch (error) {
+
+            document.getElementById("output").innerText =
+                "Unable to load files";
+
+        }
     }
+
 </script>
 
 </body>
